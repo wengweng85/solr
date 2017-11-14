@@ -1,0 +1,64 @@
+<script type="text/javascript" src="jquery-1.8.2.min.js"></script>
+    <input type="text" size="50" value="" id="keyword" name="keyword" />
+    <input type="button" value="搜索" id="search" />
+    <div id="result"></div>
+    <script type="text/javascript">
+        $("#search").click(function() {
+            var keyword = $("#keyword").val();
+            var solrServer = "http://127.0.0.1:8080/solr/new_core/select";
+            $.ajax({
+                type : "get",
+                url : solrServer,
+                data : {
+                    wt : "json",
+                    q : "f_title_ik:" + keyword,
+                    indent : true,
+                    "json.wrf" : 'callback',
+                    "hl" : "true",
+                    "hl.fl" : "f_title_ik, f_value_ik",
+                    "hl.simple.pre" : "<font color=\"red\">",
+                    "hl.simple.post" : "</font>",
+                    "start":"0",
+                    "rows":"20"
+                },
+                dataType : "jsonp",
+                //jsonp : "callback",
+                jsonpCallback : "callback",//自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名
+                error : function() {
+                    $("#result").html("<font color=\"red\">没有您要查询的结果。</font>");
+                }
+            });
+        });
+
+        function callback(data) {
+            var responseHeader = data.responseHeader;
+            var response = data.response;
+            var highlighting = data.highlighting;
+            var docs = response.docs;
+            var result = new Array();
+            result.push("结果数:" + response.numFound + "条,耗时:"+ responseHeader.QTime / 1000 + "秒");
+            var hlString = "";
+            for ( var index in docs) {
+                var doc = docs[index];
+                var docid = doc.id;
+                hl_string = "【ID】：" + doc.id;
+                hl_string='';
+                var hdoc = highlighting[docid];
+                var f_title_ik = doc.f_title_ik;
+                var f_value_ik = doc.f_value_ik;
+                if(hdoc.f_title_ik){
+                    title = hdoc.f_title_ik;
+                }
+                if(hdoc.f_value_ik){
+                    f_value_ik = hdoc.f_value_ik;
+                }
+               // hl_string += ", 【标题】：" + title + ", 【描述】：" + f_value_ik;
+                hl_string+=title
+                
+                result.push("------------------------------------------------------------");
+                result.push(hl_string);
+            }
+
+            $("#result").html("</hr>" + result.join("</br>"));
+        }
+    </script>

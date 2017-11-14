@@ -1,0 +1,14 @@
+<dataConfig>
+    <dataSource type="JdbcDataSource" driver="oracle.jdbc.driver.OracleDriver" url="jdbc:oracle:thin:@//127.0.0.1:1521/orcl" user="cms" password="cms" /> 
+    <document name="cms_info_detail" >
+        <entity pk='F_INFO_ID' name="cms_info_data" transformer="ClobTransformer" query="select a.f_info_id ,b.f_title,c.f_value  from cms_info a,cms_info_detail b, cms_info_clob c where a.f_info_id=b.f_info_id and a.f_info_id=c.f_info_id "
+		deltaQuery="select t.f_info_id  from cms_info t where t.f_publish_date  > to_date('${dih.last_index_time}','yyyy-MM-dd HH24:mi:ss')"
+		deltaImportQuery="select a.f_info_id ,b.f_title,c.f_value  from cms_info a,cms_info_detail b, cms_info_clob c where a.f_info_id=b.f_info_id and a.f_info_id=c.f_info_id and a.f_info_id='${dih.delta.id}'"
+		>
+            <field column="F_INFO_ID" name="id"></field>
+            <field column="F_TITLE" name="f_title_ik"></field> 
+            <field column="F_VALUE" name="f_value_ik" clob="true" ></field> 
+        </entity>
+    </document>
+</dataConfig>
+
