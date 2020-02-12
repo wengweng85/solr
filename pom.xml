@@ -7,7 +7,7 @@
   <url>http://maven.apache.org</url>
   <properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<solr.version>${lucene.version}</solr.version>
+		<solr.version>8.4.1</solr.version>
 		<curator.version>2.8.0</curator.version>
 		<hadoop.version>2.7.2</hadoop.version>
 		<httpclient.version>4.4.1</httpclient.version>
